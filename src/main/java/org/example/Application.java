@@ -5,17 +5,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class StartProgram {
-    public StartProgram() {
+public class App {
+    public App() {
         System.out.println( "Hello user, you are included in the personal films program ");
     }
 
     public void startChoseUser() {
         System.out.println("1.If you want to see a list of films enter [1] \n 2.if you want to see a list of movies with rating enter [2] \n 3. Exit \t");
 
-        int scanner = new Scanner(System.in).nextInt();
+
 
         while (true) {
+            int scanner = new Scanner(System.in).nextInt();
             if (scanner == 1) {
                 funcOutputList();
                 break;
@@ -27,7 +28,6 @@ public class StartProgram {
                 break;
             } else {
                 System.out.println("Error repeat");
-                continue;
             }
         }
 
