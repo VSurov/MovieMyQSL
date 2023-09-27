@@ -28,19 +28,19 @@ public class Movie {
         this.year = year;
     }
 
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
     public Movie(int id, String name, String genre, int year, int rating) {
         this.id = id;
         this.name = name;
         this.genre = genre;
         this.year = year;
+        this.rating = rating;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -81,7 +81,6 @@ public class Movie {
         return getClass().getSimpleName() + "{id: " + id +
                 " Name: " + name +
                 ", genre: " + genre +
-                ", year: " + year + ",rating: "+rating+"}";
+                ", year: " + year + ",rating: " + rating + "}";
     }
-
 }

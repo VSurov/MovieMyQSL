@@ -5,14 +5,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class App {
-    public App() {
-        System.out.println( "Hello user, you are included in the personal films program ");
+public class Application {
+    public Application() {
+        System.out.println("Hello user, you are included in the personal films program ");
     }
 
-    public void startChoseUser() {
+    public void run() {
         System.out.println("1.If you want to see a list of films enter [1] \n 2.if you want to see a list of movies with rating enter [2] \n 3. Exit \t");
-
 
 
         while (true) {
@@ -42,8 +41,18 @@ public class App {
             Statement statement = connectionToMySQL.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
-            while (resultSet.next()){
-                Movie movie = new Movie(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getInt(4),resultSet.getInt(5));
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+
+                String name = resultSet.getString(2);
+
+                String genre = resultSet.getString(3);
+
+                int year = resultSet.getInt(4);
+
+                int rating = resultSet.getInt(5);
+
+                Movie movie = new Movie(id, name, genre, year, rating);
                 System.out.println(movie);
 
             }
@@ -61,8 +70,16 @@ public class App {
             Statement statement = connectionToMySQL.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
-            while (resultSet.next()){
-                Movie movie = new Movie(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getInt(4));
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+
+                String name = resultSet.getString(2);
+
+                String genre = resultSet.getString(3);
+
+                int year = resultSet.getInt(4);
+
+                Movie movie = new Movie(id, name, genre, year);
                 System.out.println(movie);
 
             }
