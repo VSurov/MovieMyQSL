@@ -83,4 +83,14 @@ public class Movie {
                 ", genre: " + genre +
                 ", year: " + year + ",rating: " + rating + "}";
     }
+
+    public String toFormattedString(int a) {
+        String template;
+        if (a == 0) {
+            template = "%d. %s";
+        } else {
+            template = "id: %d name: %s, genre: %s, year: %d, rating: %d";
+        }
+        return template;
+    }
 }
