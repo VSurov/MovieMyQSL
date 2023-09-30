@@ -7,23 +7,21 @@ public class RequestManager {
     private static final String URL = "jdbc:mysql://localhost:3306/mydbmovie";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
-    private static final String DELETE = "DELETE FROM movie WHERE id=?";
-    private static final String INSERT_NEW = "INSERT INTO movie VALUES(?,?,?,?,?)";
-    private static final String UPDATE = "UPDATE movie SET name=? WHERE id=?";
+    private static final String DELETE = "DELETE FROM movie WHERE name=?";
+    private static final String INSERT_NEW = "INSERT INTO movie(name,genre,year,rating) VALUES(?,?,?,?)";
+    private static final String UPDATE = "UPDATE movie SET name=? WHERE name=?";
 
     private Connection connection;
     private PreparedStatement preparedStatement = null;
 
-    public void queryAdd(int id, String name, String genre, int year, int rating) {
-        try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            preparedStatement = connection.prepareStatement(INSERT_NEW);
+    public void queryAdd(String name, String genre, int year, int rating) {
+        try (Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+            preparedStatement = getConnection().prepareStatement(INSERT_NEW);
 
-            preparedStatement.setInt(1, id);
-            preparedStatement.setString(2, name);
-            preparedStatement.setString(3, genre);
-            preparedStatement.setInt(4, year);
-            preparedStatement.setInt(5, rating);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, genre);
+            preparedStatement.setInt(3, year);
+            preparedStatement.setInt(4, rating);
 
             preparedStatement.execute();
         } catch (SQLException e) {
@@ -31,30 +29,26 @@ public class RequestManager {
         }
     }
 
-    public void queryUpdate(int id, String name){
-        try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            preparedStatement = connection.prepareStatement(UPDATE);
+    public void queryUpdate(String oldName, String newName) {
+        try (Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+            preparedStatement = getConnection().prepareStatement(UPDATE);
 
-            preparedStatement.setString(1,name);
-            preparedStatement.setInt(2,id);
+            preparedStatement.setString(1, newName);
+            preparedStatement.setString(2, oldName);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    public void queryDelete(int id) {
-        try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            preparedStatement = connection.prepareStatement(DELETE);
+    public void queryDelete(String name) {
+        try (Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+            preparedStatement = getConnection().prepareStatement(DELETE);
 
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, name);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
