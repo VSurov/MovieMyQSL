@@ -6,13 +6,18 @@ public class Movie {
     private String genre;
     private int year;
     private int rating;
+    private static final String template = "name: %s, genre: %s, year: %d, rating: %d";
+    private static final String templateName = "name: %s";
 
     public Movie() {
     }
 
-    public Movie(String name, String genre) {
+    public Movie(String name) {
         this.name = name;
-        this.genre = genre;
+    }
+
+    public Movie(String name, String genre) {
+        this(name,genre,0);
     }
 
     public Movie(String name, String genre, int year) {
@@ -82,5 +87,12 @@ public class Movie {
                 " Name: " + name +
                 ", genre: " + genre +
                 ", year: " + year + ",rating: " + rating + "}";
+    }
+
+    public String toFormattedString() {
+        return String.format(template, name, genre, year, rating);
+    }
+    public String toFormattedStringName() {
+        return String.format(templateName, name);
     }
 }
