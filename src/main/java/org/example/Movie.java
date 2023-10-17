@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 public class Movie {
     private int id;
     private String name;
@@ -9,28 +11,11 @@ public class Movie {
     private static final String template = "name: %s, genre: %s, year: %d, rating: %d";
     private static final String templateName = "name: %s";
 
-    public Movie() {
-    }
-
-    public Movie(String name) {
-        this.name = name;
-    }
-
-    public Movie(String name, String genre) {
-        this(name,genre,0);
-    }
-
-    public Movie(String name, String genre, int year) {
+    public Movie(String name, String genre, int year, int rating) {
         this.name = name;
         this.genre = genre;
         this.year = year;
-    }
-
-    public Movie(int id, String name, String genre, int year) {
-        this.id = id;
-        this.name = name;
-        this.genre = genre;
-        this.year = year;
+        this.rating = rating;
     }
 
     public Movie(int id, String name, String genre, int year, int rating) {
@@ -81,17 +66,10 @@ public class Movie {
         this.year = year;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{id: " + id +
-                " Name: " + name +
-                ", genre: " + genre +
-                ", year: " + year + ",rating: " + rating + "}";
-    }
-
     public String toFormattedString() {
         return String.format(template, name, genre, year, rating);
     }
+
     public String toFormattedStringName() {
         return String.format(templateName, name);
     }

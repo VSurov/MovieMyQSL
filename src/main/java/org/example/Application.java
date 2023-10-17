@@ -1,38 +1,50 @@
 package org.example;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
-    public Application() {
-        System.out.println("Hello user, you are included in the personal films program ");
+    private RequestManager requestManager;
+    private final String OPEN_MOVIE_LIST = "1";
+    private final String OPEN_MOVIE_LIST_DETAIL = "2";
+    private final String SEARCH_FOR_NAME = "3";
+    private final String ADD_MOVIE = "4";
+    private final String UPDATE_MOVIE = "5";
+    private final String REMOVE_MOVIE = "6";
+    private final String EXIT = "7";
+
+    public Application(RequestManager iRequestManager) {
+        this.requestManager = iRequestManager;
     }
 
     public void run() {
-        System.out.println("1.If you want to see a list of films, enter [1] \n2.If you want to see a detailed list of movies, enter [2] \n3.If you want add to you list movie, enter [3] \n4.If you want to change the movie name from the list, enter [4] \n5.If you want to remove a movie from the list, enter [5] \n6. Exit, enter [6] \t");
+        System.out.println("Hello user, you are included in the personal films program ");
+
+        System.out.println("1.If you want to see a list of films, enter [1] \n2.If you want to see a detailed list of movies, enter [2] \n3.If you want to find a movie by title, enter [3]\n4.If you want add to you list movie, enter [4] \n5.If you want to change the movie name from the list, enter [5] \n6.If you want to remove a movie from the list, enter [6] \n7. Exit, enter [7] \t");
 
         label:
         while (true) {
             String scanner = new Scanner(System.in).nextLine();
             switch (scanner) {
-                case "1":
+                case OPEN_MOVIE_LIST:
                     outputListName();
                     break label;
-                case "2":
+                case OPEN_MOVIE_LIST_DETAIL:
                     outputListAll();
                     break label;
-                case "3":
+                case SEARCH_FOR_NAME:
+                    searchForName();
+                    break label;
+                case ADD_MOVIE:
                     addFilm();
                     break label;
-                case "4":
+                case UPDATE_MOVIE:
                     updateFilm();
                     break label;
-                case "5":
+                case REMOVE_MOVIE:
                     removeFilm();
                     break label;
-                case "6":
+                case EXIT:
                     System.out.println("Thx for using");
                     break label;
                 default:
@@ -42,14 +54,53 @@ public class Application {
         }
     }
 
+    private void outputListName() {
+        System.out.println("Your list of film");
+
+        int count = 1;
+
+        for (Movie movie : requestManager.getAllMovies()) {
+            System.out.println(count + ". " + movie.toFormattedStringName());
+            count++;
+        }
+    }
+
+    private void outputListAll() {
+        System.out.println("Your detail list of film");
+
+        int count = 1;
+
+        for (Movie movie : requestManager.getAllMovies()) {
+            System.out.println(count + ". " + movie.toFormattedString());
+            count++;
+        }
+    }
+
+    private void searchForName() {
+        System.out.println("Enter: Movie name what are you looking for");
+
+        String searchingName = new Scanner(System.in).nextLine();
+
+        int count = 1;
+
+        for (Movie movie : requestManager.getMoviesBySubstringInName(searchingName)) {
+            System.out.println(count + ". " + movie.toFormattedStringName());
+            count++;
+        }
+    }
+
     private void addFilm() {
         System.out.println("Enter: Name of Film, What genre,Year of film release and rating in yor opinion\n");
 
         System.out.println("Enter Name Film");
         String name = new Scanner(System.in).nextLine();
 
-        System.out.println("Enter genre");
-        String genre = new Scanner(System.in).nextLine();
+        System.out.println("Enter number of genre:\n1. Sport \n2. Action \n3. Adventure \n4. Comedy \n5. Fantasy \n6. Historical \n7. Horror \n8.Romance \n9. Thriller");
+        String genreNumber = new Scanner(System.in).nextLine();
+
+        GenreOfMovieList genreOfMovieList = GenreOfMovieList.ACTION;
+
+        String genre = genreOfMovieList.genreChoice(genreNumber);
 
         System.out.println("Enter Year");
         int year = new Scanner(System.in).nextInt();
@@ -57,88 +108,64 @@ public class Application {
         System.out.println("Enter rating");
         int rating = new Scanner(System.in).nextInt();
 
-        RequestManager requestManager = new RequestManager();
-        requestManager.queryAdd(name, genre, year, rating);
+        requestManager.addMovie(name, genre, year, rating);
 
         outputListAll();
     }
 
     private void updateFilm() {
-        outputListName();
+        System.out.println("Your list of film");
+
+        int count = 1;
+
+        List<Movie> allMovies = requestManager.getAllMovies();
+
+        for (Movie movie : allMovies) {
+            System.out.println(count + ". " + movie.toFormattedString());
+            count++;
+        }
+
         System.out.println("Enter the movie Name to change it from the list ");
 
-        System.out.println("Enter old Name Film");
-        String oldName = new Scanner(System.in).nextLine();
+        System.out.println("enter number  film");
+        String numberFilm = new Scanner(System.in).nextLine();
 
         System.out.println("Enter new Name Film");
         String newName = new Scanner(System.in).nextLine();
 
-        RequestManager requestManager = new RequestManager();
-        requestManager.queryUpdate(oldName, newName);
+        int input = Integer.parseInt(numberFilm);
+        int index = input - 1;
+        int filmId = allMovies.get(index).getId();
+
+        requestManager.updateName(filmId, newName);
 
         outputListName();
     }
 
     private void removeFilm() {
-        outputListName();
+        System.out.println("Enter to find the movie and remove it from the list ");
 
-        System.out.println("Enter the movie name to remove it from the list ");
+        String searchingName = new Scanner(System.in).nextLine();
 
-        String name = new Scanner(System.in).nextLine();
+        int count = 1;
 
-        RequestManager requestManager = new RequestManager();
-        requestManager.queryDelete(name);
+        List<Movie> searchingMovies = requestManager.getMoviesBySubstringInName(searchingName);
 
-        outputListName();
-    }
-
-    private void outputListAll() {
-        RequestManager requestManager = new RequestManager();
-
-        String query = "select * from movie"; //запрос получить все поля в таблице movie
-
-        try (Statement statement = requestManager.getConnection().createStatement()) {
-            ResultSet resultSet = statement.executeQuery(query);
-
-            int count = 1;
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt(1);
-
-                String name = resultSet.getString(2);
-
-                String genre = resultSet.getString(3);
-
-                int year = resultSet.getInt(4);
-
-                int rating = resultSet.getInt(5);
-
-                Movie movie = new Movie(id, name, genre, year, rating);
-                System.out.println(count + ". " + movie.toFormattedString());
-                count++;
-            }
-        } catch (SQLException e) {
+        for (Movie movie : searchingMovies) {
+            System.out.println(count + ". " + movie.toFormattedString());
+            count++;
         }
-    }
 
-    private void outputListName() {
-        RequestManager requestManager = new RequestManager();
+        System.out.println("Enter number of movie to remove it from the list ");
 
-        String query = "select * from movie"; //запрос получить все поля в таблице movie
+        String numberFilm = new Scanner(System.in).nextLine();
 
-        try (Statement statement = requestManager.getConnection().createStatement()) {
-            ResultSet resultSet = statement.executeQuery(query);
+        int input = Integer.parseInt(numberFilm);
+        int index = input - 1;
+        int filmId = searchingMovies.get(index).getId();
 
-            int count = 1;
+        requestManager.removeMovie(filmId);
 
-            while (resultSet.next()) {
-                String name = resultSet.getString(2);
-
-                Movie movie = new Movie(name);
-                System.out.println(count + ". " + movie.toFormattedStringName());
-                count++;
-            }
-        } catch (SQLException e) {
-        }
+        outputListName();
     }
 }
