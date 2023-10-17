@@ -1,15 +1,10 @@
 package org.example;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
     private RequestManager requestManager;
-
-    public Application(RequestManager requestManager) {
-        this.requestManager = requestManager;
-
-    }
-
     private final String OPEN_MOVIE_LIST = "1";
     private final String OPEN_MOVIE_LIST_DETAIL = "2";
     private final String SEARCH_FOR_NAME = "3";
@@ -17,6 +12,10 @@ public class Application {
     private final String UPDATE_MOVIE = "5";
     private final String REMOVE_MOVIE = "6";
     private final String EXIT = "7";
+
+    public Application(RequestManager iRequestManager) {
+        this.requestManager = iRequestManager;
+    }
 
     public void run() {
         System.out.println("Hello user, you are included in the personal films program ");
@@ -58,13 +57,23 @@ public class Application {
     private void outputListName() {
         System.out.println("Your list of film");
 
-        requestManager.queryGetName();
+        int count = 1;
+
+        for (Movie movie : requestManager.getAllMovies()) {
+            System.out.println(count + ". " + movie.toFormattedStringName());
+            count++;
+        }
     }
 
     private void outputListAll() {
         System.out.println("Your detail list of film");
 
-        requestManager.queryAll();
+        int count = 1;
+
+        for (Movie movie : requestManager.getAllMovies()) {
+            System.out.println(count + ". " + movie.toFormattedString());
+            count++;
+        }
     }
 
     private void searchForName() {
@@ -72,7 +81,12 @@ public class Application {
 
         String searchingName = new Scanner(System.in).nextLine();
 
-        requestManager.querySearchForName(searchingName);
+        int count = 1;
+
+        for (Movie movie : requestManager.getMoviesBySubstringInName(searchingName)) {
+            System.out.println(count + ". " + movie.toFormattedStringName());
+            count++;
+        }
     }
 
     private void addFilm() {
@@ -81,8 +95,12 @@ public class Application {
         System.out.println("Enter Name Film");
         String name = new Scanner(System.in).nextLine();
 
-        System.out.println("Enter genre");
-        String genre = new Scanner(System.in).nextLine();
+        System.out.println("Enter number of genre:\n1. Sport \n2. Action \n3. Adventure \n4. Comedy \n5. Fantasy \n6. Historical \n7. Horror \n8.Romance \n9. Thriller");
+        String genreNumber = new Scanner(System.in).nextLine();
+
+        GenreOfMovieList genreOfMovieList = GenreOfMovieList.ACTION;
+
+        String genre = genreOfMovieList.genreChoice(genreNumber);
 
         System.out.println("Enter Year");
         int year = new Scanner(System.in).nextInt();
@@ -90,23 +108,36 @@ public class Application {
         System.out.println("Enter rating");
         int rating = new Scanner(System.in).nextInt();
 
-        requestManager.queryAdd(name, genre, year, rating);
+        requestManager.addMovie(name, genre, year, rating);
 
         outputListAll();
     }
 
     private void updateFilm() {
-        outputListName();
+        System.out.println("Your list of film");
+
+        int count = 1;
+
+        List<Movie> allMovies = requestManager.getAllMovies();
+
+        for (Movie movie : allMovies) {
+            System.out.println(count + ". " + movie.toFormattedString());
+            count++;
+        }
 
         System.out.println("Enter the movie Name to change it from the list ");
 
-        System.out.println("Enter old Name Film");
-        String oldName = new Scanner(System.in).nextLine();
+        System.out.println("enter number  film");
+        String numberFilm = new Scanner(System.in).nextLine();
 
         System.out.println("Enter new Name Film");
         String newName = new Scanner(System.in).nextLine();
 
-        requestManager.queryUpdate(oldName, newName);
+        int input = Integer.parseInt(numberFilm);
+        int index = input - 1;
+        int filmId = allMovies.get(index).getId();
+
+        requestManager.updateName(filmId, newName);
 
         outputListName();
     }
@@ -114,15 +145,26 @@ public class Application {
     private void removeFilm() {
         System.out.println("Enter to find the movie and remove it from the list ");
 
-        String nameOfRemoveFilm = new Scanner(System.in).nextLine();
+        String searchingName = new Scanner(System.in).nextLine();
 
-        requestManager.querySearchForName(nameOfRemoveFilm);
+        int count = 1;
+
+        List<Movie> searchingMovies = requestManager.getMoviesBySubstringInName(searchingName);
+
+        for (Movie movie : searchingMovies) {
+            System.out.println(count + ". " + movie.toFormattedString());
+            count++;
+        }
 
         System.out.println("Enter number of movie to remove it from the list ");
 
-        String numberRemove = new Scanner(System.in).nextLine();
+        String numberFilm = new Scanner(System.in).nextLine();
 
-        requestManager.executeRemoveFlow(nameOfRemoveFilm, numberRemove);
+        int input = Integer.parseInt(numberFilm);
+        int index = input - 1;
+        int filmId = searchingMovies.get(index).getId();
+
+        requestManager.removeMovie(filmId);
 
         outputListName();
     }

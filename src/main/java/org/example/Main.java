@@ -2,8 +2,10 @@ package org.example;
 
 public class Main {
     public static void main(String[] args) {
-        RequestManager requestManager = new RequestManager();
-        Application application = new Application(requestManager);
+        Parser parser = new Parser();
+        MySQLRequestManager mySQLRequestManager = parser.parseGson();
+
+        Application application = new Application(mySQLRequestManager);
         application.run();
     }
 }

@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 public class Movie {
     private int id;
     private String name;
@@ -8,13 +10,6 @@ public class Movie {
     private int rating;
     private static final String template = "name: %s, genre: %s, year: %d, rating: %d";
     private static final String templateName = "name: %s";
-
-    public Movie() {
-    }
-
-    public Movie(String name) {
-        this.name = name;
-    }
 
     public Movie(String name, String genre, int year, int rating) {
         this.name = name;
