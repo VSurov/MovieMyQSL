@@ -1,11 +1,11 @@
 package org.example;
 
-public class ConnectionParse {
+public class ConnectionSettingModul {
     private String URL;
     private String USERNAME;
     private String PASSWORD;
 
-    public ConnectionParse(String URL, String USERNAME, String PASSWORD) {
+    public ConnectionSettingModul(String URL, String USERNAME, String PASSWORD) {
         this.URL = URL;
         this.USERNAME = USERNAME;
         this.PASSWORD = PASSWORD;
