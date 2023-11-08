@@ -1,5 +1,5 @@
 {
   "URL": "jdbc:mysql://localhost:3306/mydbmovie",
   "USERNAME": "root",
-  "PASSWORD": "root"
+  "PASSWORD": "ABC123qwerty"
 }

@@ -9,7 +9,6 @@ public class Movie {
     private int year;
     private int rating;
     private static final String template = "name: %s, genre: %s, year: %d, rating: %d";
-    private static final String templateName = "name: %s";
 
     public Movie(String name, String genre, int year, int rating) {
         this.name = name;
@@ -70,7 +69,4 @@ public class Movie {
         return String.format(template, name, genre, year, rating);
     }
 
-    public String toFormattedStringName() {
-        return String.format(templateName, name);
-    }
 }

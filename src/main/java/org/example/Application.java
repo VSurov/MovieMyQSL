@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,6 +13,8 @@ public class Application {
     private final String UPDATE_MOVIE = "5";
     private final String REMOVE_MOVIE = "6";
     private final String EXIT = "7";
+
+    private static final String templateName = "name: %s";
 
     public Application(RequestManager iRequestManager) {
         this.requestManager = iRequestManager;
@@ -60,7 +63,7 @@ public class Application {
         int count = 1;
 
         for (Movie movie : requestManager.getAllMovies()) {
-            System.out.println(count + ". " + movie.toFormattedStringName());
+            System.out.println(count + ". " + toFormattedStringName(movie));
             count++;
         }
     }
@@ -84,7 +87,7 @@ public class Application {
         int count = 1;
 
         for (Movie movie : requestManager.getMoviesBySubstringInName(searchingName)) {
-            System.out.println(count + ". " + movie.toFormattedStringName());
+            System.out.println(count + ". " + toFormattedStringName(movie));
             count++;
         }
     }
@@ -98,9 +101,16 @@ public class Application {
         System.out.println("Enter number of genre:\n1. Sport \n2. Action \n3. Adventure \n4. Comedy \n5. Fantasy \n6. Historical \n7. Horror \n8.Romance \n9. Thriller");
         String genreNumber = new Scanner(System.in).nextLine();
 
-        GenreOfMovieList genreOfMovieList = GenreOfMovieList.ACTION;
+        int input = Integer.parseInt(genreNumber);
+        int index = input - 1;
 
-        String genre = genreOfMovieList.genreChoice(genreNumber);
+        ArrayList<String> listGenres = new ArrayList<>();
+
+        for(GenreOfMovieList genre: GenreOfMovieList.values()){
+            listGenres.add(genre.getGenre());
+        }
+
+        String genre = listGenres.get(index);
 
         System.out.println("Enter Year");
         int year = new Scanner(System.in).nextInt();
@@ -167,5 +177,8 @@ public class Application {
         requestManager.removeMovie(filmId);
 
         outputListName();
+    }
+    public String toFormattedStringName(Movie movie) {
+        return String.format(templateName, movie.getName());
     }
 }
